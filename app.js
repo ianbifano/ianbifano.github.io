@@ -1,12 +1,25 @@
 /* function to get the products */
-function getProducts() {
-    let products
+async function getProducts() {
+    let products = []
     if (localStorage.getItem("products")) {
-        products = JSON.parse(localStorage.getItem('products'))
+        products = await JSON.parse(localStorage.getItem('products'))
     } else {
-        products = start()
+        products = await start()
     }
+
+    showProducts(products)
+
     return products
+}
+
+function getCarrito() {
+    let carrito
+    if (localStorage.getItem("carrito")) {
+        carrito = JSON.parse(localStorage.getItem("carrito"))
+    } else {
+        carrito = []
+    }
+    return carrito
 }
 
 /* Formulario de carga de un nuevo producto */
@@ -15,6 +28,7 @@ function createProduct() {
 
     const form = document.createElement("form")
     form.setAttribute("id", "form")
+    form.setAttribute("class", "col-3 ms-2")
 
     //
     const name__label = document.createElement("label")
@@ -83,11 +97,22 @@ function createProduct() {
     //
     const submit__button = document.createElement("button")
     submit__button.setAttribute("id", "submit__button")
-    submit__button.setAttribute("class", "btn btn-primary")
+    submit__button.setAttribute("class", "btn btn-primary mt-2")
     submit__button.setAttribute("type", "submit")
     submit__button.innerText = "submit"
 
     form.appendChild(submit__button)
+
+    const cancel_button = document.createElement("button")
+    cancel_button.setAttribute("id", "cancel_button")
+    cancel_button.setAttribute("class", "btn btn-danger mt-2")
+    cancel_button.onclick = () => {
+        main__section.innerHTML = ''
+        showProducts(products)
+    }
+    cancel_button.innerText = 'Cancelar'
+
+    form.appendChild(cancel_button)
 
     main__section.innerHTML = ''
     main__section.append(form)
@@ -100,19 +125,15 @@ function createProduct() {
 
         let name
         name = form.children[1].value
-        console.log("name" + form.children[1].value)
 
         let description
         description = form.children[3].value
-        console.log("description" + form.children[3].value)
 
         let cost
         cost = parseFloat(form.children[5].value)
-        console.log("cost" + form.children[5].value)
 
         let price
         price = parseFloat(form.children[7].value)
-        console.log("price" + form.children[7].value)
 
         const new_product = new Product(products.length, name, description, cost, price)
 
@@ -120,23 +141,41 @@ function createProduct() {
 
         saveLocal('products', JSON.stringify(products))
         main__section.innerHTML = ''
-        carrito.length > 0 ? showCarrito(carrito) : showProducts(products)
+
+        Toastify({
+
+            text: "Producto creado correctamente",
+
+            duration: 9000,
+
+            gravity: 'bottom',
+
+            position: 'right',
+
+            style: {
+                background: "linear-gradient(to right, #00b09b, #96c93d)",
+            }
+
+        }).showToast()
+
+        showProducts(products)
     })
 
 }
 
 
 function createItem(product) {
-    console.log(product)
     const main__section = document.getElementById("main__section")
     main__section.innerHTML = ''
 
     const title = document.createElement("h4")
+    title.setAttribute("class", "ms-2")
     title.innerText = "NUEVO ITEM"
     main__section.appendChild(title)
 
     const form = document.createElement("form")
     form.setAttribute("id", "form")
+    form.setAttribute("class", "col-3 ms-2")
     //
     const description__label = document.createElement("label")
     description__label.setAttribute("class", "form-label")
@@ -172,12 +211,22 @@ function createItem(product) {
     //
     const submit__button = document.createElement("button")
     submit__button.setAttribute("id", "submit__button")
-    submit__button.setAttribute("class", "btn btn-primary")
+    submit__button.setAttribute("class", "btn btn-primary mt-2")
     submit__button.setAttribute("type", "submit")
     submit__button.innerText = "submit"
 
     form.appendChild(submit__button)
 
+    const cancel_button = document.createElement("button")
+    cancel_button.setAttribute("id", "cancel_button")
+    cancel_button.setAttribute("class", "btn btn-danger mt-2")
+    cancel_button.onclick = () => {
+        main__section.innerHTML = ''
+        showProducts(products)
+    }
+    cancel_button.innerText = 'Cancelar'
+
+    form.appendChild(cancel_button)
 
     main__section.append(form)
 
@@ -197,9 +246,28 @@ function createItem(product) {
         product.items.push(new_item)
 
         saveLocal('products', JSON.stringify(products))
-        main__section.innerHTML = ''
 
-        carrito.length > 0 ? showCarrito(carrito) : showProducts(products)
+        main__section.innerHTML = ''
+        ++product.stock
+
+        Toastify({
+
+            text: "Item creado correctamente",
+
+            duration: 9000,
+
+            gravity: 'bottom',
+
+            position: 'right',
+
+            style: {
+                background: "linear-gradient(to right, #00b09b, #96c93d)",
+            }
+
+        }).showToast()
+
+        console.log(products)
+        showProducts(products)
     })
 }
 
@@ -207,48 +275,33 @@ function createItem(product) {
 const saveLocal = (key, value) => { localStorage.setItem(key, value) }
 
 /* Inicia una precarga de datos para probar la aplicacion */
-function start() {
+async function start() {
     let products = []
-    products.push(new Product(products.length, "bateria", "bateria de 2000mha", 315, 500))
-    products.push(new Product(products.length, "mouse", "mouse de 100bpi", 3015, 4500))
-    products.push(new Product(products.length, "impresora", "Impresora HP", 7305, 8500))
 
-    products[0].items.push(new Item(products[0].id, products[0].items.length, 'abcd-416', ''))
-    products[0].items.push(new Item(products[0].id, products[0].items.length, 'abcd-415', ''))
-    products[0].items.push(new Item(products[0].id, products[0].items.length, 'abcd-417', ''))
-    products[0].items.push(new Item(products[0].id, products[0].items.length, 'abcd-418', ''))
-    products[0].stock = products[0].items.length
-
-    products[1].items.push(new Item(products[1].id, products[1].items.length, 'sdfg-704', 'color blanco'))
-    products[1].items.push(new Item(products[1].id, products[1].items.length, 'sdfg-701', 'color blanco'))
-    products[1].items.push(new Item(products[1].id, products[1].items.length, 'sdfg-702', 'color rojo'))
-    products[1].items.push(new Item(products[1].id, products[1].items.length, 'sdfg-703', 'color blanco'))
-    products[1].stock = products[1].items.length
-
-    products[2].items.push(new Item(products[2].id, products[2].items.length, 'kjhg-001', 'color blanco'))
-    products[2].items.push(new Item(products[2].id, products[2].items.length, 'kjhg-002', 'color gris'))
-    products[2].items.push(new Item(products[2].id, products[2].items.length, 'kjhg-003', 'color negro'))
-    products[2].items.push(new Item(products[2].id, products[2].items.length, 'kjhg-004', 'color negro'))
-    products[2].stock = products[2].items.length
+    await fetch("/json/products.json")
+        .then((response) => {
+                return response.json()
+        })
+        .then((result) => {
+            products = result
+            products.forEach((product) => {
+                product.stock = product.items.length
+            })
+        })
 
     saveLocal("products", JSON.stringify(products))
-
-    console.log("productos cargados")
-
     products = getProducts()
-
     return products
 }
 
 /* Carga la tabla de productos en la seccion principal */
 function showProducts(products) {
-
     if (!document.getElementById("table__article")) {
         const main__section = document.getElementById("main__section")
 
         const table__article = document.createElement("article")
         table__article.setAttribute("id", "table__article")
-        table__article.setAttribute("class", "col-8")
+        table__article.setAttribute("class", "col-8 ms-2")
         main__section.appendChild(table__article)
     }
 
@@ -261,7 +314,7 @@ function showProducts(products) {
     table__article.appendChild(title)
 
     const div__button = document.createElement("div")
-    div__button.setAttribute("class", "d-flex flex-row-reverse")
+    div__button.setAttribute("class", "d-flex flex-row-reverse mb-1")
 
     const button = document.createElement("button")
     button.setAttribute("class", "btn btn-success")
@@ -343,6 +396,13 @@ function showProducts(products) {
 
             let td_stock = document.createElement("td")
             td_stock.innerText = element.stock
+
+            if (element.stock == 0) {
+                tr.setAttribute("class", "table-danger")
+            } else if (element.stock < 3) {
+                tr.setAttribute("class", "table-warning")
+            }
+
             tr.appendChild(td_stock)
 
             if (element.items.some(element => element.sold == false)) {
@@ -360,14 +420,14 @@ function showProducts(products) {
                 td_button.appendChild(button2)
                 tr.appendChild(td_button)
                 tbody.appendChild(tr)
-                console.log(products)
             } else {
-                console.log("herre")
                 let td_button = document.createElement("td")
                 let button = document.createElement("button")
                 button.setAttribute("class", "btn btn-warning")
                 button.setAttribute("disabled", true)
-                button.setAttribute("onclick", "showItems(products[" + element.id + "])")
+                button.onclick = () => {
+                    showItems(products[element.id])
+                }
                 button.innerText = "Sin stock"
                 td_button.appendChild(button)
                 let button2 = document.createElement("button")
@@ -384,9 +444,24 @@ function showProducts(products) {
     } else {
         table__article.innerHTML = "No posee productos"
     }
+
+    if (carrito.length > 0) {
+        showCarrito(carrito, products)
+    } else if (carrito.length == 0) {
+        const main__section = document.getElementById('main__section')
+        if (document.getElementById("carrito__article")) {
+            const carrito__article = document.getElementById("carrito__article")
+            main__section.removeChild(carrito__article)
+        }
+    }
 }
 
 function showItems(product) {
+
+    if (document.getElementById("carrito__article")) {
+        const carrito__article = document.getElementById("carrito__article")
+        main__section.removeChild(carrito__article)
+    }
 
     const table__article = document.getElementById("table__article")
     table__article.innerHTML = ''
@@ -397,7 +472,6 @@ function showItems(product) {
     table__article.appendChild(title)
 
     if (product.items.length != 0) {
-        console.log(product)
         const table__items = document.createElement("table")
         table__items.setAttribute("class", "table table-striped table-hover")
 
@@ -412,19 +486,19 @@ function showItems(product) {
         thead.appendChild(th_name)
 
         const th_description = document.createElement("th")
-        th_description.innerText = "ID"
+        th_description.innerText = "Description"
         thead.appendChild(th_description)
 
         const th_price = document.createElement("th")
-        th_price.innerText = "ID"
+        th_price.innerText = "Price"
         thead.appendChild(th_price)
 
         const th_code = document.createElement("th")
-        th_code.innerText = "ID"
+        th_code.innerText = "Code"
         thead.appendChild(th_code)
 
         const th_actions = document.createElement("th")
-        th_actions.innerText = "ID"
+        th_actions.innerText = "Actions"
         thead.appendChild(th_actions)
 
         table__items.appendChild(thead)
@@ -444,7 +518,7 @@ function showItems(product) {
                 tr.appendChild(td_name)
 
                 const td_description = document.createElement("td")
-                td_description.innerText = product.description
+                td_description.innerText = element.detail
                 tr.appendChild(td_description)
 
                 const td_price = document.createElement("td")
@@ -467,10 +541,24 @@ function showItems(product) {
             }
         })
         table__items.appendChild(tbody)
+
         table__article.appendChild(table__items)
+
+        const cancel_button = document.createElement("button")
+        cancel_button.setAttribute("id", "cancel_button")
+        cancel_button.setAttribute("class", "btn btn-danger")
+        cancel_button.setAttribute("onclick","showProducts(products)")
+        cancel_button.innerText = 'Cancelar'
+
+        table__article.appendChild(cancel_button)
+
+        main__section.appendChild(table__article)
+
     } else {
         table__article.innerHTML = "No posee productos cargados"
     }
+
+    showCarrito(carrito, products)
 }
 
 /* Agrega  un iterm al carrito */
@@ -478,11 +566,31 @@ function addToCarrito(item) {
     item.sold = true
     --products[item.product_id].stock
     carrito.push(item)
-    showCarrito(carrito)
+
+    Toastify({
+
+        text: "Se agrego el Item al carrito",
+
+        duration: 9000,
+
+        gravity: 'bottom',
+
+        position: 'right',
+
+        style: {
+            background: "linear-gradient(to right, #00b09b, #96c93d)",
+        }
+
+    }).showToast()
+
+    saveLocal("carrito", JSON.stringify(carrito))
+    saveLocal("products", JSON.stringify(products))
+    showProducts(products)
 }
 
 /* Muestra la tabla del carrito de compras */
-function showCarrito(carrito) {
+function showCarrito(carrito, products) {
+
     if (carrito.length > 0) {
         if (!document.getElementById('carrito__article')) {
             const main__section = document.getElementById('main__section')
@@ -494,6 +602,7 @@ function showCarrito(carrito) {
         const carrito__article = document.getElementById('carrito__article')
         carrito__article.innerHTML = ''
         const title = document.createElement("h4")
+        title.setAttribute("class", "mt-5")
         title.innerText = "CARRITO"
         carrito__article.appendChild(title)
 
@@ -566,29 +675,53 @@ function showCarrito(carrito) {
 
         carrito__article.appendChild(carrito__table)
 
-        showProducts(products)
-    } else {
-        main__section.innerHTML = ''
-        showProducts(products)
+
     }
 }
 
 function deleteFromCarrito(item) {
-
     products[carrito[item].product_id].items[carrito[item].id].sold = false
     ++products[carrito[item].product_id].stock
     delete carrito[item]
-    showCarrito(carrito)
+
+    const aux = carrito.filter((e) => e.id !== item.id)
+    carrito = aux
+
+    Toastify({
+
+        text: "Se quito el Item del carrito",
+
+        duration: 9000,
+
+        gravity: 'bottom',
+
+        position: 'right',
+
+        style: {
+            background: "linear-gradient(to right, #00b09b, #96c93d)",
+        }
+
+    }).showToast()
+
+
+
+    saveLocal("carrito", JSON.stringify(carrito))
+    saveLocal("products", JSON.stringify(products))
+    showProducts(products)
 }
 
 /*  */
 /*  */
 /*  */
 /* APLICACION */
+
 let carrito = []
 
 let products = []
 
-products = getProducts()
+carrito = getCarrito()
 
-showProducts(products)
+getProducts().then((res) => {
+        products = res
+})
+

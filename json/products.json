@@ -1,0 +1,112 @@
+[
+    {
+        "id": 0,
+        "name": "bateria",
+        "description": "bateria de 200mha",
+        "cost": 315,
+        "price": 500,
+        "margin": 185,
+        "stock": 0,
+        "items": [
+            {
+                "product_id": 0,
+                "id": 0,
+                "code": "abcd-415",
+                "detail": "",
+                "sold": false
+            },
+            {
+                "product_id": 0,
+                "id": 1,
+                "code": "abcd-417",
+                "detail": "",
+                "sold": false
+            },
+            {
+                "product_id": 0,
+                "id": 2,
+                "code": "abcd-418",
+                "detail": "",
+                "sold": false
+            }
+        ]
+    },
+    {
+        "id": 1,
+        "name": "mouse",
+        "description": "mouse de 100bpi",
+        "cost": 3015,
+        "price": 4500,
+        "margin": 1485,
+        "stock": 0,
+        "items": [
+            {
+                "product_id": 1,
+                "id": 0,
+                "code": "sdfg-704",
+                "detail": "blanco",
+                "sold": false
+            },
+            {
+                "product_id": 1,
+                "id": 1,
+                "code": "sdfg-701",
+                "destail": "blanco",
+                "sold": false
+            },
+            {
+                "product_id": 1,
+                "id": 2,
+                "code": "sdfg-702",
+                "detail": "rojo",
+                "sold": false
+            },
+            {
+                "product_id": 1,
+                "id": 3,
+                "code": "sdfg-703",
+                "detail": "blanco",
+                "sold": false
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "name": "   impresora",
+        "description": "impresora HP",
+        "cost": 7305,
+        "price": 8500,
+        "margin": 1195,
+        "stock": 0,
+        "items": [
+            {
+                "product_id": 2,
+                "id": 0,
+                "code": "kjhg-415",
+                "destail": "blanco",
+                "sold": false
+            },
+            {
+                "product_id": 2,
+                "id": 1,
+                "code": "kjhg-415",
+                "destail": "gris",
+                "sold": false
+            },
+            {
+                "product_id": 2,
+                "id": 2,
+                "code": "kjhg-415",
+                "detail": "negro",
+                "sold": false
+            },
+            {
+                "product_id": 2,
+                "id": 3,
+                "code": "kjhg-415",
+                "detail": "negro",
+                "sold": false
+            }
+        ]
+    }
+]
